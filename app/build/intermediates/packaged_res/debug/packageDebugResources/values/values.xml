@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent">#03DAC6</color>
+    <color name="accent_dark">#018786</color>
+    <color name="black">#000000</color>
+    <color name="instagram_gradient_end">#DC2743</color>
+    <color name="instagram_gradient_start">#F09433</color>
+    <color name="primary">#6200EE</color>
+    <color name="primary_dark">#3700B3</color>
+    <color name="white">#FFFFFF</color>
+    <string name="add_post">Add post</string>
+    <string name="app_name">Postkeeper</string>
+    <string name="delete">Delete</string>
+    <string name="download">Download</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="no_posts">No posts yet\nShare a link from Instagram or X to get started!</string>
+    <string name="paste_url_hint">Paste Instagram or X/Twitter URL</string>
+    <style name="Theme.Postkeeper" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorSecondaryVariant">@color/accent_dark</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+    </style>
+</resources>

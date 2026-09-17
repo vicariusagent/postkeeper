@@ -1,0 +1,15 @@
+Postkeeper - Social Media Archiver
+
+Description:
+Postkeeper is a sleek, privacy-focused Android utility that allows you to effortlessly save images and videos from Instagram and X (Twitter). By leveraging Android's native Share Intent, Postkeeper acts as a seamless bridge between your favorite social platforms and your local storage. 
+
+Key Highlights:
+• Instant Downloads: Share a link, and Postkeeper handles the rest. No copy-pasting required.
+• Smart Format Detection: Automatically saves images as high-quality JPG/PNG files and videos/stories as MP4.
+• Offline Library: Access your saved content anytime, even without an internet connection.
+• Zero Bloat: No ads, no user accounts, and no data tracking. Your data stays on your device.
+• Modern Design: Built with Material You (Material Design 3) for a beautiful, adaptive UI that matches your system theme.
+
+Perfect for creators, archivists, and anyone who wants to keep a personal collection of their favorite online moments.
+
+Keywords: Instagram saver, Twitter video downloader, social media archiver, story saver, reel downloader, Kotlin Android, open source.

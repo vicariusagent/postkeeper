@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.postkeeper.app-mergeDebugResources-63:/layout/activity_home.xml",
+        "source": "com.postkeeper.app-main-66:/layout/activity_home.xml"
+    },
+    {
+        "merged": "com.postkeeper.app-mergeDebugResources-63:/layout/item_post.xml",
+        "source": "com.postkeeper.app-main-66:/layout/item_post.xml"
+    }
+]
