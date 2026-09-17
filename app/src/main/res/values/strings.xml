@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Postkeeper</string>
+    <string name="paste_url_hint">Paste Instagram or X/Twitter URL</string>
+    <string name="no_posts">No posts yet\nShare a link from Instagram or X to get started!</string>
+    <string name="download">Download</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="delete">Delete</string>
+    <string name="add_post">Add post</string>
+</resources>
