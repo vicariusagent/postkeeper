@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -60,12 +60,12 @@ dependencies {
     
     // Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
     
     // Room
     implementation(libs.room.runtime)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.room.ktx)
     
     // Coroutines
@@ -82,7 +82,7 @@ dependencies {
     
     // Glide
     implementation(libs.glide)
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
     
     // WorkManager
     implementation(libs.work.runtime)
@@ -94,8 +94,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-}
-
-kapt {
-    correctErrorTypes = true
 }

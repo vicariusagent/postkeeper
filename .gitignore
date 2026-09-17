@@ -1,33 +1,11 @@
 ```
-# Android build outputs
-build/
-.gradle/
-*.apk
-*.aar
-*.dex
-
-# Android studio
-.local.properties
-*.iml
-*.iws
-.idea/
+# Kotlin compiler sessions
+.kotlin/sessions/
 
 # Gradle
-gradle/
-gradlew
-gradlew.bat
-
-# Generated files
-*/generated/*
-gen/
-out/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Log Files
-*.log
+.gradle/
+build/
 ```node_modules/
 .next/
 dist/
-node_modules/
+*.log
