@@ -49,7 +49,7 @@ Built with the latest Android technologies as of **September 2026**, Postkeeper 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/postkeeper.git
+   git clone https://github.com/vicariusagent/postkeeper.git
    cd postkeeper
    ```
 
@@ -102,7 +102,7 @@ Contributions are welcome! If you find a bug or have a feature request, please o
 
 ## 📬 Contact
 
-Project Link: [https://github.com/yourusername/postkeeper](https://github.com/yourusername/postkeeper)
+Project Link: [https://github.com/vicariusagent/postkeeper](https://github.com/vicariusagent/postkeeper)
 
 ---
 *Built with ❤️ using Kotlin and Jetpack Compose*
