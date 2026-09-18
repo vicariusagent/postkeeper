@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#6200EE</color>
-    <color name="primary_dark">#3700B3</color>
-    <color name="accent">#03DAC6</color>
-    <color name="accent_dark">#018786</color>
-    <color name="white">#FFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="instagram_gradient_start">#F09433</color>
-    <color name="instagram_gradient_end">#DC2743</color>
+    <color name="ic_launcher_background">#6750A4</color>
 </resources>

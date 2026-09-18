@@ -1,4 +1,4 @@
-package com.postkeeper.app.ui.home
+package com.postkeeper.app.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
