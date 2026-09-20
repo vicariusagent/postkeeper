@@ -1,5 +1,45 @@
-Nothing should be ignored based on the provided file changes, as they only include source/config files (.md and .txt) without any build artifacts, dependencies, or temporary files.node_modules/
-.next/
-dist/
+```
+# Android build artifacts
 build/
+.gradle/
+app/build/
+
+# Compiled files
+*.class
+*.dex
+*.so
+*.aar
+*.jar
+
+# IDE files
+.idea/
+*.iml
+*.iws
+.vscode/
+
+# Log files
 *.log
+hs_err_pid*.log
+
+# Generated files
+gen/
+out/
+
+# Local configuration
+local.properties
+
+# Coverage reports
+coverage/
+*.ec
+
+# Temporary files
+*.tmp
+*~
+.DS_Store
+Thumbs.db
+
+# APK and other outputs
+*.apk
+*.ap_
+*.aab
+```

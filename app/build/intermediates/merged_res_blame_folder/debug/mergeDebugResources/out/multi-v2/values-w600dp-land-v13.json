@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.postkeeper.app-mergeDebugResources-62:/values-w600dp-land-v13/values-w600dp-land-v13.xml",
+            "outputFile": "com.postkeeper.app-mergeDebugResources-79:/values-w600dp-land-v13/values-w600dp-land-v13.xml",
             "map": [
                 {
                     "source": "/root/.gradle/caches/8.12/transforms/9ed2612a9355b72717cfe1c94a0b7a16/transformed/material-1.12.0/res/values-w600dp-land-v13/values-w600dp-land-v13.xml",

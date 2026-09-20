@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
 }
 
 android {
@@ -39,24 +40,45 @@ android {
     }
     
     buildFeatures {
-        viewBinding = true
+        compose = true
+    }
+    
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
 }
 
 dependencies {
+    // Core Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
+    
+    // Compose BOM
+    implementation(platform("androidx.compose:compose-bom:2025.09.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3-window-size-class")
+    implementation("androidx.activity:activity-compose:1.10.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+    implementation("androidx.navigation:navigation-compose:2.8.6")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    
+    // Adaptive Layouts for Foldables/Tablets/Desktop
+    implementation("androidx.compose.material3.adaptive:adaptive:1.0.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.0.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0")
+    
+    // Icons - using core only to reduce memory
+    implementation("androidx.compose.material:material-icons-core")
+    implementation("androidx.compose.material:material-icons-extended")
     
     // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.livedata)
-    
-    // Navigation
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
     
     // Hilt
     implementation(libs.hilt.android)
@@ -80,9 +102,8 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.jsoup)
     
-    // Glide
-    implementation(libs.glide)
-    ksp(libs.glide.compiler)
+    // Coil for image loading
+    implementation("io.coil-kt:coil-compose:2.7.0")
     
     // WorkManager
     implementation(libs.work.runtime)
