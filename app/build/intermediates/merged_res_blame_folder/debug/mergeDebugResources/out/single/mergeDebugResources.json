@@ -1,110 +1,114 @@
 [
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-xxxhdpi_ic_launcher_background.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-xxxhdpi/ic_launcher_background.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-xxxhdpi_ic_launcher_foreground.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-xxxhdpi/ic_launcher_foreground.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/drawable_ic_delete.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/drawable/ic_delete.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-xhdpi_ic_launcher_foreground.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-xhdpi/ic_launcher_foreground.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/drawable_ic_video.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/drawable/ic_video.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_ic_delete.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/ic_delete.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-mdpi_ic_launcher_background.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-mdpi/ic_launcher_background.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_ic_add.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/ic_add.xml"
     },
     {
-        "merged": "com.postkeeper.app-debug-64:/drawable_ic_error.xml.flat",
-        "source": "com.postkeeper.app-main-66:/drawable/ic_error.xml"
+        "merged": "com.postkeeper.app-debug-81:/xml_data_extraction_rules.xml.flat",
+        "source": "com.postkeeper.app-main-83:/xml/data_extraction_rules.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/layout_activity_home.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/layout/activity_home.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_ic_image.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/ic_image.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-mdpi_ic_launcher_background.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-mdpi/ic_launcher_background.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-anydpi-v26_ic_launcher_foreground.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-anydpi-v26/ic_launcher_foreground.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-hdpi_ic_launcher_foreground.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-hdpi/ic_launcher_foreground.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-mdpi_ic_launcher_foreground.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-mdpi/ic_launcher_foreground.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-xhdpi_ic_launcher_background.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-xhdpi/ic_launcher_background.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-xhdpi_ic_launcher_foreground.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-xhdpi/ic_launcher_foreground.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-xxxhdpi_ic_launcher_background.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-xxxhdpi/ic_launcher_background.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/drawable_ic_add.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/drawable/ic_add.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_ic_placeholder.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/ic_placeholder.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-hdpi_ic_launcher_background.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-hdpi/ic_launcher_background.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-xxhdpi_ic_launcher_background.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-xxhdpi/ic_launcher_background.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-hdpi_ic_launcher_foreground.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-hdpi/ic_launcher_foreground.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-xxhdpi_ic_launcher_foreground.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-xxhdpi/ic_launcher_foreground.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-xhdpi_ic_launcher_background.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-xhdpi/ic_launcher_background.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-hdpi_ic_launcher_background.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-hdpi/ic_launcher_background.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/drawable_ic_twitter.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/drawable/ic_twitter.xml"
+        "merged": "com.postkeeper.app-debug-81:/xml_backup_rules.xml.flat",
+        "source": "com.postkeeper.app-main-83:/xml/backup_rules.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/drawable_ic_unknown.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/drawable/ic_unknown.xml"
+        "merged": "com.postkeeper.app-debug-81:/xml_file_paths.xml.flat",
+        "source": "com.postkeeper.app-main-83:/xml/file_paths.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/drawable_bg_media_type.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/drawable/bg_media_type.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_ic_error.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/ic_error.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-xxhdpi_ic_launcher_background.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-xxhdpi/ic_launcher_background.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/drawable_ic_instagram.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/drawable/ic_instagram.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_ic_twitter.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/ic_twitter.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/xml_file_paths.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/xml/file_paths.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_ic_video.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/ic_video.xml"
     },
     {
-        "merged": "com.postkeeper.app-debug-64:/drawable_ic_placeholder.xml.flat",
-        "source": "com.postkeeper.app-main-66:/drawable/ic_placeholder.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-mdpi_ic_launcher_foreground.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-mdpi/ic_launcher_foreground.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-anydpi-v26_ic_launcher_background.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-anydpi-v26/ic_launcher_background.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/layout_item_post.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/layout/item_post.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_ic_unknown.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/ic_unknown.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-xxhdpi_ic_launcher_foreground.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-xxhdpi/ic_launcher_foreground.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_bg_media_type.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/bg_media_type.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/drawable_ic_image.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/drawable/ic_image.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_ic_instagram.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/ic_instagram.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "com.postkeeper.app-debug-81:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.postkeeper.app-main-83:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "/root/.gradle/daemon/8.12/com.postkeeper.app-debug-64:/mipmap-xxxhdpi_ic_launcher_foreground.xml.flat",
-        "source": "/root/.gradle/daemon/8.12/com.postkeeper.app-main-66:/mipmap-xxxhdpi/ic_launcher_foreground.xml"
+        "merged": "com.postkeeper.app-debug-81:/mipmap-anydpi-v26_ic_launcher_background.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-anydpi-v26/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.postkeeper.app-debug-81:/mipmap-anydpi-v26_ic_launcher_foreground.xml.flat",
+        "source": "com.postkeeper.app-main-83:/mipmap-anydpi-v26/ic_launcher_foreground.xml"
     }
 ]
