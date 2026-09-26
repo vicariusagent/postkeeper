@@ -1,5 +1,14 @@
-Nothing should be ignored based on the provided file changes, as they only include source/config files (.md and .txt) without any build artifacts, dependencies, or temporary files.node_modules/
-.next/
-dist/
+# Build and Gradle
 build/
+.gradle/
+
+# IDE and Editor
+.idea/
+*.iml
+.vscode/
+
+# Local configuration
+local.properties
+
+# Logs and Crash Reports
 *.log

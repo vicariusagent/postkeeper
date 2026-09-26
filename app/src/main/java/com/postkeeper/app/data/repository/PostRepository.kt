@@ -79,7 +79,7 @@ class PostRepository(private val postDao: PostDao, private val context: Context)
         }
         
         val downloader = MediaDownloader(context)
-        val result = downloader.downloadMedia(post.mediaUrl, post.mediaType)
+        val result = downloader.downloadMedia(post.mediaUrl, post.mediaType, postId)
         
         if (result is DownloadResult.Success) {
             postDao.markAsDownloaded(postId, result.filePath, System.currentTimeMillis())
