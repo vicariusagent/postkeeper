@@ -50,7 +50,15 @@ class PostRepository(private val postDao: PostDao, private val context: Context)
         }
         
         if (mediaInfo == null) {
-            return ProcessResult.Error("Failed to extract media information. Make sure the post is public.")
+            return ProcessResult.Error(
+                when (parsedResult.platform) {
+                    Platform.INSTAGRAM ->
+                        "Couldn't read that Instagram link. It may be private, an expired story, or rate-limited. Try again shortly."
+                    Platform.TWITTER ->
+                        "Couldn't read that X post. It may be deleted, protected, or have no media attached."
+                    Platform.UNKNOWN -> "Unsupported link."
+                }
+            )
         }
         
         // Create post entity
@@ -75,9 +83,13 @@ class PostRepository(private val postDao: PostDao, private val context: Context)
         val post = postDao.getPostById(postId) ?: return DownloadResult.Error("Post not found")
         
         if (post.isDownloaded) {
-            return DownloadResult.Error("Post already downloaded")
+            return DownloadResult.Error("Already saved to your device")
         }
         
+        if (post.mediaUrl.isBlank()) {
+            return DownloadResult.Error("No downloadable media found for this post")
+        }
+
         val downloader = MediaDownloader(context)
         val result = downloader.downloadMedia(post.mediaUrl, post.mediaType, postId)
         

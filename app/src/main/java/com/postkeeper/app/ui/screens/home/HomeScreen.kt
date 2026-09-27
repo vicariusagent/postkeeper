@@ -9,31 +9,65 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.postkeeper.app.data.model.Platform
 import com.postkeeper.app.data.model.Post
 import com.postkeeper.app.ui.PostCard
 import com.postkeeper.app.ui.theme.*
+
+/** One-shot UI feedback events (snackbar messages) emitted by the ViewModel. */
+sealed class UiMessage {
+    data class Info(val text: String) : UiMessage()
+    data class Error(val text: String) : UiMessage()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     posts: List<Post>,
+    isProcessing: Boolean,
+    message: UiMessage?,
+    onMessageShown: () -> Unit,
     onDownloadClick: (Post) -> Unit,
     onDeleteClick: (Post) -> Unit,
     onAddUrl: (String) -> Unit
 ) {
-    var showAddDialog by remember { mutableStateOf(false) }
-    var urlInput by remember { mutableStateOf("") }
-    
-    // Split posts by platform
-    val instagramPosts = remember(posts) { posts.filter { it.platform == "instagram" } }
-    val xPosts = remember(posts) { posts.filter { it.platform == "x" } }
-    
+    var showAddDialog by rememberSaveable { mutableStateOf(false) }
+    var urlInput by rememberSaveable { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Close the Add dialog automatically when the save+download finishes
+    var wasProcessing by remember { mutableStateOf(false) }
+    LaunchedEffect(isProcessing) {
+        if (wasProcessing && !isProcessing) {
+            showAddDialog = false
+            urlInput = ""
+        }
+        wasProcessing = isProcessing
+    }
+
+    // Split posts by platform (enum comparison — comparing the enum to a String
+    // previously matched nothing, so both sections were always empty)
+    val instagramPosts = remember(posts) { posts.filter { it.platform == Platform.INSTAGRAM } }
+    val xPosts = remember(posts) { posts.filter { it.platform == Platform.TWITTER } }
+
+    // Surface download / processing feedback to the user
+    LaunchedEffect(message) {
+        when (message) {
+            is UiMessage.Info -> snackbarHostState.showSnackbar(message.text)
+            is UiMessage.Error -> snackbarHostState.showSnackbar(message.text)
+            null -> {}
+        }
+        if (message != null) onMessageShown()
+    }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { 
@@ -116,16 +150,17 @@ fun HomeScreen(
     if (showAddDialog) {
         AddUrlDialog(
             urlInput = urlInput,
+            isProcessing = isProcessing,
             onUrlChange = { urlInput = it },
-            onDismiss = { 
+            onDismiss = {
                 showAddDialog = false
                 urlInput = ""
             },
             onConfirm = {
                 if (urlInput.isNotBlank()) {
                     onAddUrl(urlInput.trim())
-                    showAddDialog = false
-                    urlInput = ""
+                    // Dialog stays open showing progress; MainActivity closes it
+                    // when processing finishes.
                 }
             }
         )
@@ -173,6 +208,7 @@ private fun SectionHeader(
 @Composable
 private fun AddUrlDialog(
     urlInput: String,
+    isProcessing: Boolean,
     onUrlChange: (String) -> Unit,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
@@ -220,10 +256,20 @@ private fun AddUrlDialog(
         confirmButton = {
             Button(
                 onClick = onConfirm,
-                enabled = urlInput.isNotBlank(),
+                enabled = urlInput.isNotBlank() && !isProcessing,
                 shape = MaterialTheme.shapes.medium
             ) {
-                Text("Add Post")
+                if (isProcessing) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Spacer(Modifier.width(SpacingSmall.dp))
+                    Text("Saving…")
+                } else {
+                    Text("Add Post")
+                }
             }
         },
         dismissButton = {
