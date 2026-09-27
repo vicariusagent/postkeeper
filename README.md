@@ -13,7 +13,7 @@ Postkeeper is an Android app for collecting links and saving image or video medi
 - Preview saved posts in a local collection, then download available media.
 - Save media to the device’s `Pictures/Postkeeper` or `Movies/Postkeeper` folder.
 - Choose **System**, **Light**, or **Dark** appearance. System is the default, and the choice is remembered.
-- Use a monochrome Material 3 interface with Noto Sans, Material Symbols, and square component shapes.
+- Use a monochrome Material 3 interface with Noto Sans, Material icons, and square component shapes.
 
 ### Download support
 
@@ -27,9 +27,9 @@ Instagram and X frequently change their pages and may require sign-in or block a
 - Hilt for dependency injection
 - OkHttp and Jsoup for public page/media requests
 - Coil for image previews
-- Material Symbols and bundled Noto Sans
+- Compose Material icons and bundled Noto Sans
 
-The Noto Sans font’s SIL Open Font License is included at `app/src/main/res/font/OFL.txt`.
+The Noto Sans font’s SIL Open Font License is included at `app/src/main/assets/fonts/OFL.txt`.
 
 Dependencies are declared in `gradle/libs.versions.toml` and `app/build.gradle.kts`. The app uses only the libraries required by the current implementation; it does not include the unused Retrofit API stub, navigation, adaptive layouts, WorkManager, ExoPlayer, or Glide dependencies.
 
