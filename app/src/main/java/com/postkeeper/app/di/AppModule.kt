@@ -4,9 +4,7 @@ import android.content.Context
 import com.postkeeper.app.data.AppDatabase
 import com.postkeeper.app.data.dao.PostDao
 import com.postkeeper.app.data.repository.PostRepository
-import com.postkeeper.app.util.InstagramExtractor
 import com.postkeeper.app.util.MediaDownloader
-import com.postkeeper.app.util.TwitterExtractor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

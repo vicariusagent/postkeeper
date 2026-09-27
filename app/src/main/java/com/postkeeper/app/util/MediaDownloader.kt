@@ -15,6 +15,19 @@ import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
 
 class MediaDownloader(private val context: Context) {
+
+    companion object {
+        /** Human-readable description of where a saved file lives. */
+        fun describeSavedLocation(path: String): String = when {
+            path.startsWith("content://") -> when {
+                path.contains("image") -> "Pictures/Postkeeper"
+                path.contains("video") -> "Movies/Postkeeper"
+                else -> "Downloads/Postkeeper"
+            }
+            path.contains("Download") -> "Downloads/Postkeeper"
+            else -> "device storage"
+        }
+    }
     
     private val client = OkHttpClient.Builder()
         .connectTimeout(60, TimeUnit.SECONDS)
@@ -26,6 +39,11 @@ class MediaDownloader(private val context: Context) {
         try {
             val request = okhttp3.Request.Builder()
                 .url(mediaUrl)
+                // Some CDNs (Instagram/X) reject requests without a browser UA.
+                .header(
+                    "User-Agent",
+                    "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36"
+                )
                 .build()
             
             val response = client.newCall(request).execute()
