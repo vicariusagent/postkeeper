@@ -27,16 +27,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         
         setContent {
-            PostkeeperTheme {
+            val themeMode = viewModel.themeMode.collectAsStateWithLifecycle()
+            PostkeeperTheme(themeMode.value) {
                 val posts = viewModel.posts.collectAsStateWithLifecycle()
                 val processResult = viewModel.processResult.collectAsStateWithLifecycle()
                 val downloadResult = viewModel.downloadResult.collectAsStateWithLifecycle()
+                val isAdding = viewModel.isAdding.collectAsStateWithLifecycle()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     HomeScreen(
                         posts = posts.value,
+                        themeMode = themeMode.value,
+                        onThemeModeChange = viewModel::setThemeMode,
                         onDownloadClick = { post ->
                             viewModel.downloadPost(post.id)
                         },
@@ -59,6 +63,7 @@ class MainActivity : ComponentActivity() {
                                 is com.postkeeper.app.util.DownloadResult.Error -> result.message
                             }
                         },
+                        isAdding = isAdding.value,
                         onDismissMessage = viewModel::clearMessages
                     )
                 }

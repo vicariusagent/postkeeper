@@ -34,7 +34,7 @@ class PostRepository(private val postDao: PostDao, private val context: Context)
         val uri = runCatching { URI(normalizedUrl) }.getOrNull()
         val host = uri?.host?.lowercase()?.removePrefix("www.")
         val validHost = host in setOf("instagram.com", "instagr.am", "x.com", "twitter.com")
-        if (uri?.scheme !in setOf("http", "https") || !validHost) {
+        if (uri == null || uri.scheme !in setOf("http", "https") || !validHost) {
             return ProcessResult.Error("Enter a valid Instagram or X post link.")
         }
         if (uri.path.orEmpty().substringAfterLast('/').contains('.')) {

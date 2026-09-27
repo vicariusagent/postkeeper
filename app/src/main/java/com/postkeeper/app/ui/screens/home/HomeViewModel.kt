@@ -2,6 +2,9 @@ package com.postkeeper.app.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import com.postkeeper.app.ui.theme.ThemeMode
 import com.postkeeper.app.data.model.Post
 import com.postkeeper.app.data.repository.PostRepository
 import com.postkeeper.app.data.repository.ProcessResult
@@ -15,8 +18,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: PostRepository
+    private val repository: PostRepository,
+    @ApplicationContext context: Context
 ) : ViewModel() {
+
+    private val preferences = context.getSharedPreferences("postkeeper_preferences", Context.MODE_PRIVATE)
+    private val _themeMode = MutableStateFlow(
+        ThemeMode.fromPreference(preferences.getString("theme_mode", ThemeMode.SYSTEM.name))
+    )
+    val themeMode: StateFlow<ThemeMode> = _themeMode.asStateFlow()
     
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
     val posts: StateFlow<List<Post>> = _posts.asStateFlow()
@@ -75,5 +85,10 @@ class HomeViewModel @Inject constructor(
     fun clearMessages() {
         _processResult.value = null
         _downloadResult.value = null
+    }
+
+    fun setThemeMode(mode: ThemeMode) {
+        preferences.edit().putString("theme_mode", mode.name).apply()
+        _themeMode.value = mode
     }
 }

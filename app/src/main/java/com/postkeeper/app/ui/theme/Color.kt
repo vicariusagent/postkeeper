@@ -2,7 +2,7 @@ package com.postkeeper.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Neutral black-on-white palette for a quiet, editorial interface.
+// Monochrome dark palette.
 val PostkeeperPrimary = Color(0xFF111111)
 val PostkeeperPrimaryVariant = Color(0xFF000000)
 val PostkeeperSecondary = Color(0xFF454545)
@@ -22,8 +22,8 @@ val XPrimary = Color(0xFFFFFFFF)
 // Surface & Background Colors
 val LightSurface = Color(0xFFFFFFFF)
 val LightSurfaceVariant = Color(0xFFF5F5F5)
-val DarkSurface = Color(0xFF1C1B1F)
-val DarkSurfaceVariant = Color(0xFF2D2C30)
+val DarkSurface = Color(0xFF000000)
+val DarkSurfaceVariant = Color(0xFF111111)
 
 // Error Colors
 val LightError = Color(0xFFBA1A1A)
@@ -60,44 +60,36 @@ val md_theme_light_outline = LightOutline
 val md_theme_light_outlineVariant = Color(0xFFCAC4D0)
 val md_theme_light_inverseSurface = Color(0xFF313033)
 val md_theme_light_inverseOnSurface = Color(0xFFF4EFF4)
-val md_theme_light_inversePrimary = Color(0xFFD0BCFF)
+val md_theme_light_inversePrimary = Color(0xFFFFFFFF)
 
 // Dark Theme Colors - Material Design Expressive
-val md_theme_dark_primary = Color(0xFFA5B4FC)
-val md_theme_dark_onPrimary = Color(0xFF312E81)
-val md_theme_dark_primaryContainer = Color(0xFF4338CA)
-val md_theme_dark_onPrimaryContainer = Color(0xFFE0E7FF)
-val md_theme_dark_secondary = Color(0xFFC4B5FD)
-val md_theme_dark_onSecondary = Color(0xFF312E81)
-val md_theme_dark_secondaryContainer = Color(0xFF5B21B6)
-val md_theme_dark_onSecondaryContainer = Color(0xFFEDE9FE)
-val md_theme_dark_tertiary = Color(0xFF67E8F9)
-val md_theme_dark_onTertiary = Color(0xFF164E63)
-val md_theme_dark_tertiaryContainer = Color(0xFF0E7490)
-val md_theme_dark_onTertiaryContainer = Color(0xFFCFFAFE)
+val md_theme_dark_primary = Color(0xFFFFFFFF)
+val md_theme_dark_onPrimary = Color(0xFF000000)
+val md_theme_dark_primaryContainer = Color(0xFF242424)
+val md_theme_dark_onPrimaryContainer = Color(0xFFFFFFFF)
+val md_theme_dark_secondary = Color(0xFFE0E0E0)
+val md_theme_dark_onSecondary = Color(0xFF000000)
+val md_theme_dark_secondaryContainer = Color(0xFF1A1A1A)
+val md_theme_dark_onSecondaryContainer = Color(0xFFE0E0E0)
+val md_theme_dark_tertiary = Color(0xFFBDBDBD)
+val md_theme_dark_onTertiary = Color(0xFF000000)
+val md_theme_dark_tertiaryContainer = Color(0xFF222222)
+val md_theme_dark_onTertiaryContainer = Color(0xFFE0E0E0)
 val md_theme_dark_error = Color(0xFFF2B8B5)
 val md_theme_dark_onError = Color(0xFF601410)
 val md_theme_dark_errorContainer = Color(0xFF8C1D18)
 val md_theme_dark_onErrorContainer = Color(0xFFF9DEDC)
-val md_theme_dark_background = Color(0xFF1C1B1F)
-val md_theme_dark_onBackground = Color(0xFFE6E1E5)
+val md_theme_dark_background = Color(0xFF000000)
+val md_theme_dark_onBackground = Color(0xFFFFFFFF)
 val md_theme_dark_surface = DarkSurface
-val md_theme_dark_onSurface = Color(0xFFE6E1E5)
+val md_theme_dark_onSurface = Color(0xFFFFFFFF)
 val md_theme_dark_surfaceVariant = DarkSurfaceVariant
-val md_theme_dark_onSurfaceVariant = Color(0xFFCAC4D0)
-val md_theme_dark_outline = DarkOutline
-val md_theme_dark_outlineVariant = Color(0xFF49454F)
-val md_theme_dark_inverseSurface = Color(0xFFE6E1E5)
-val md_theme_dark_inverseOnSurface = Color(0xFF313033)
-val md_theme_dark_inversePrimary = PostkeeperPrimary
-
-// Common values
-val CornerRadiusExtraSmall = 4
-val CornerRadiusSmall = 8
-val CornerRadiusMedium = 12
-val CornerRadiusLarge = 16
-val CornerRadiusExtraLarge = 24
-val CornerRadiusFull = 999
+val md_theme_dark_onSurfaceVariant = Color(0xFFB3B3B3)
+val md_theme_dark_outline = Color(0xFF777777)
+val md_theme_dark_outlineVariant = Color(0xFF333333)
+val md_theme_dark_inverseSurface = Color(0xFFFFFFFF)
+val md_theme_dark_inverseOnSurface = Color(0xFF000000)
+val md_theme_dark_inversePrimary = Color(0xFF222222)
 
 val SpacingExtraSmall = 4
 val SpacingSmall = 8

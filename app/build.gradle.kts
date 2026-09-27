@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -42,48 +42,27 @@ android {
     buildFeatures {
         compose = true
     }
-    
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
 }
 
 dependencies {
     // Core Android
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    
-    // Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2025.09.00"))
+    // Compose UI
+    implementation(platform(libs.androidx.compose.bom))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material3:material3-window-size-class")
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
-    implementation("androidx.navigation:navigation-compose:2.8.6")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    
-    // Adaptive Layouts for Foldables/Tablets/Desktop
-    implementation("androidx.compose.material3.adaptive:adaptive:1.0.0")
-    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.0.0")
-    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0")
-    
-    // Icons - using core only to reduce memory
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.compose.material:material-icons-extended")
-    
-    // Lifecycle
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.livedata)
+
+    // Google Material Symbols
+    implementation(libs.material.symbols.compose)
     
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation)
     
     // Room
     implementation(libs.room.runtime)
@@ -94,22 +73,12 @@ dependencies {
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
     
-    // Network
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
+    // HTTP and HTML metadata parsing
     implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
-    implementation(libs.gson)
     implementation(libs.jsoup)
     
     // Coil for image loading
-    implementation("io.coil-kt:coil-compose:2.7.0")
-    
-    // WorkManager
-    implementation(libs.work.runtime)
-    
-    // ExoPlayer
-    implementation(libs.exoplayer)
+    implementation(libs.coil.compose)
     
     // Testing
     testImplementation(libs.junit)

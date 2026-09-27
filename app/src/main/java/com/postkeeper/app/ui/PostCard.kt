@@ -4,14 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Photo
+import androidx.compose.foundation.shape.RectangleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +20,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.postkeeper.app.data.model.MediaType
@@ -28,7 +29,7 @@ import com.postkeeper.app.data.model.Platform
 import com.postkeeper.app.data.model.Post
 import com.postkeeper.app.ui.theme.SpacingExtraSmall
 import com.postkeeper.app.ui.theme.SpacingMedium
-import com.postkeeper.app.ui.theme.CornerRadiusMedium
+import dev.vicart.compose.material.symbols.MaterialSymbol
 
 @Composable
 fun PostCard(
@@ -37,11 +38,13 @@ fun PostCard(
     onDeleteClick: (Post) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showDeleteConfirmation by remember(post.id) { mutableStateOf(false) }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 2.dp),
-        shape = RoundedCornerShape(24.dp),
+        shape = RectangleShape,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -62,7 +65,7 @@ fun PostCard(
                     contentDescription = post.title ?: "Post thumbnail",
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
+                        .clip(RectangleShape),
                     contentScale = ContentScale.Crop
                 )
                 
@@ -85,7 +88,7 @@ fun PostCard(
                         onClick = { },
                         label = { Text("Saved") },
                         leadingIcon = {
-                            Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(16.dp))
+                            MaterialSymbol.Filled(icon = "check", size = 16.dp)
                         },
                         modifier = Modifier
                             .align(Alignment.BottomStart)
@@ -128,32 +131,42 @@ fun PostCard(
                         onClick = { onDownloadClick(post) },
                         modifier = Modifier.weight(1f),
                         enabled = !post.isDownloaded,
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RectangleShape
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Download,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
+                        MaterialSymbol.Filled(icon = "download", size = 18.dp)
                         Spacer(Modifier.width(SpacingExtraSmall.dp))
                         Text(if (post.isDownloaded) "Saved" else "Download")
                     }
                     
                     IconButton(
-                        onClick = { onDeleteClick(post) },
+                        onClick = { showDeleteConfirmation = true },
                         colors = IconButtonDefaults.iconButtonColors(
-                            contentColor = MaterialTheme.colorScheme.error
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                         ),
-                        modifier = Modifier.wrapContentSize()
+                        modifier = Modifier.wrapContentSize().semantics { contentDescription = "Delete post" }
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete"
-                        )
+                        MaterialSymbol.Filled(icon = "delete", size = 24.dp)
                     }
                 }
             }
         }
+    }
+
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text("Delete saved post?") },
+            text = { Text("This removes the post from your Postkeeper collection.") },
+            confirmButton = {
+                TextButton(onClick = { showDeleteConfirmation = false; onDeleteClick(post) }) {
+                    Text("Delete", color = MaterialTheme.colorScheme.onSurface)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirmation = false }) { Text("Cancel") }
+            },
+            shape = RectangleShape
+        )
     }
 }
 
@@ -173,7 +186,7 @@ private fun PlatformBadge(platform: Platform, modifier: Modifier = Modifier) {
     
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(100.dp),
+        shape = RectangleShape,
         shadowElevation = 4.dp
     ) {
         Box(
@@ -199,7 +212,7 @@ private fun PlatformBadge(platform: Platform, modifier: Modifier = Modifier) {
 private fun MediaTypeBadge(mediaType: MediaType, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(100.dp),
+        shape = RectangleShape,
         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
         shadowElevation = 2.dp
     ) {
@@ -208,15 +221,10 @@ private fun MediaTypeBadge(mediaType: MediaType, modifier: Modifier = Modifier) 
             horizontalArrangement = Arrangement.spacedBy(SpacingExtraSmall.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = when (mediaType) {
-                    MediaType.VIDEO -> Icons.Default.PlayArrow
-                    MediaType.IMAGE -> Icons.Default.Photo
-                    MediaType.UNKNOWN -> Icons.Default.Photo
-                },
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(16.dp)
+            MaterialSymbol.Filled(
+                icon = if (mediaType == MediaType.VIDEO) "play_arrow" else "image",
+                size = 16.dp,
+                tint = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = when (mediaType) {

@@ -36,7 +36,7 @@ object InstagramExtractor {
             val author = doc.select("meta[name=\"twitter:creator\"]").attr("content").takeIf { it.isNotBlank() }
                 ?: "Instagram"
             
-            if (videoUrl.isNotEmpty()) {
+            if (!videoUrl.isNullOrEmpty()) {
                 return@withContext InstagramMediaInfo(
                     mediaUrl = videoUrl,
                     thumbnailUrl = imageUrl.ifEmpty { null },

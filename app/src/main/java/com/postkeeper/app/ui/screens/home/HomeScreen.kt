@@ -3,32 +3,37 @@ package com.postkeeper.app.ui.screens.home
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.foundation.shape.RectangleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import dev.vicart.compose.material.symbols.MaterialSymbol
 import com.postkeeper.app.data.model.Post
 import com.postkeeper.app.ui.PostCard
+import com.postkeeper.app.ui.theme.ThemeMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     posts: List<Post>,
+    themeMode: ThemeMode,
+    onThemeModeChange: (ThemeMode) -> Unit,
     onDownloadClick: (Post) -> Unit,
     onDeleteClick: (Post) -> Unit,
     onAddUrl: (String) -> Unit,
     processMessage: String? = null,
     downloadMessage: String? = null,
+    isAdding: Boolean = false,
     onDismissMessage: () -> Unit = {}
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
+    var showThemeMenu by remember { mutableStateOf(false) }
     var urlInput by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -36,6 +41,15 @@ fun HomeScreen(
         (downloadMessage ?: processMessage)?.let {
             snackbarHostState.showSnackbar(it)
             onDismissMessage()
+        }
+    }
+
+    LaunchedEffect(processMessage) {
+        if (processMessage == "Post saved to your collection." ||
+            processMessage == "This post is already in your collection."
+        ) {
+            showAddDialog = false
+            urlInput = ""
         }
     }
 
@@ -50,7 +64,29 @@ fun HomeScreen(
                     }
                 },
                 actions = {
-                    Text("${posts.size} SAVED", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(end = 20.dp))
+                    Text("${posts.size} SAVED", style = MaterialTheme.typography.labelMedium)
+                    Box {
+                        IconButton(
+                            onClick = { showThemeMenu = true },
+                            modifier = Modifier.semantics {
+                                contentDescription = "Appearance: ${themeMode.label}"
+                            }
+                        ) {
+                            MaterialSymbol.Filled(icon = "contrast", size = 22.dp)
+                        }
+                        DropdownMenu(expanded = showThemeMenu, onDismissRequest = { showThemeMenu = false }) {
+                            ThemeMode.entries.forEach { mode ->
+                                DropdownMenuItem(
+                                    text = { Text(mode.label) },
+                                    onClick = { onThemeModeChange(mode); showThemeMenu = false },
+                                    leadingIcon = {
+                                        if (mode == themeMode) MaterialSymbol.Filled(icon = "check", size = 18.dp)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    Spacer(Modifier.width(8.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
@@ -58,11 +94,11 @@ fun HomeScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showAddDialog = true },
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                icon = { MaterialSymbol.Filled(icon = "add", size = 24.dp) },
                 text = { Text("Add link") },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = RoundedCornerShape(18.dp)
+                shape = RectangleShape
             )
         },
         containerColor = MaterialTheme.colorScheme.background
@@ -102,17 +138,21 @@ fun HomeScreen(
                         placeholder = { Text("https://…") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RectangleShape
                     )
                 }
             },
             confirmButton = {
-                Button(onClick = { onAddUrl(urlInput.trim()); showAddDialog = false; urlInput = "" }, enabled = urlInput.isNotBlank()) {
-                    Text("Save link")
+                Button(onClick = { onAddUrl(urlInput.trim()) }, enabled = urlInput.isNotBlank() && !isAdding, shape = RectangleShape) {
+                    if (isAdding) {
+                        CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                        Spacer(Modifier.width(8.dp))
+                    }
+                    Text(if (isAdding) "Adding…" else "Save link")
                 }
             },
             dismissButton = { TextButton(onClick = { showAddDialog = false; urlInput = "" }) { Text("Cancel") } },
-            shape = RoundedCornerShape(28.dp)
+            shape = RectangleShape
         )
     }
 }
@@ -124,9 +164,9 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Surface(shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.size(88.dp)) {
+        Surface(shape = RectangleShape, color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.size(88.dp)) {
             Box(contentAlignment = Alignment.Center) {
-                Icon(Icons.Default.ArrowDownward, contentDescription = null, modifier = Modifier.size(34.dp))
+                MaterialSymbol.Filled(icon = "archive", size = 34.dp)
             }
         }
         Spacer(Modifier.height(24.dp))

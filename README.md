@@ -5,104 +5,56 @@
 [![Min SDK](https://img.shields.io/badge/Min%20SDK-26-orange.svg)](https://android-arsenal.com/api?level=26)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**Postkeeper** is a modern Android application designed to archive and save media from social media platforms. Simply share a post or story link from **Instagram** or **X (Twitter)** to Postkeeper, and it will automatically download the images and videos to your device.
+Postkeeper is an Android app for collecting links and saving image or video media from public Instagram and X posts. Posts are stored locally on the device. No account is required.
 
-Built with the latest Android technologies as of **September 2026**, Postkeeper leverages open-source libraries to provide a seamless, ad-free, and privacy-focused archiving experience.
+## Features
 
-## ✨ Features
+- Add a post link in the app or share a text link from another app.
+- Preview saved posts in a local collection, then download available media.
+- Save media to the device’s `Pictures/Postkeeper` or `Movies/Postkeeper` folder.
+- Choose **System**, **Light**, or **Dark** appearance. System is the default, and the choice is remembered.
+- Use a monochrome Material 3 interface with Noto Sans, Material Symbols, and square component shapes.
 
-- **📥 One-Tap Saving**: Share links directly from Instagram or X to the app to trigger downloads.
-- **🖼️ Smart Media Handling**: Automatically detects and saves images as `.jpg/.png` and videos/stories as `.mp4`.
-- **🌐 Platform Support**:
-  - **Instagram**: Posts, Reels, and Stories.
-  - **X (Twitter)**: Tweets with media and video posts.
-- **📂 Organized Library**: View all your saved posts within the app with a clean, modern UI.
-- **🔒 Privacy First**: No accounts, no tracking, and no ads. All data is stored locally on your device.
-- **⚡ Modern Architecture**: Built with MVVM, Clean Architecture principles, and Jetpack components.
+### Download support
 
-## 📸 Screenshots
+Instagram and X frequently change their pages and may require sign-in or block automated access. Postkeeper reads public page metadata; it cannot guarantee that every post, story, or reel can be extracted. Direct image and video file URLs are also supported when the server returns a media file. Failed extraction or download attempts are shown in the app.
 
-*(Add screenshots here showing the Home screen, Downloading state, and Gallery view)*
+## Technology
 
-## 🛠️ Tech Stack
+- Kotlin and Jetpack Compose with Material 3
+- AndroidX Lifecycle and Kotlin Coroutines
+- Room for the local collection
+- Hilt for dependency injection
+- OkHttp and Jsoup for public page/media requests
+- Coil for image previews
+- Material Symbols and bundled Noto Sans
 
-- **Language**: Kotlin
-- **UI Toolkit**: Jetpack Compose & Material Design 3
-- **Architecture**: MVVM (Model-View-ViewModel)
-- **Dependency Injection**: Hilt
-- **Local Database**: Room
-- **Networking**: OkHttp, Retrofit (for API interactions), Jsoup (for meta-tag parsing)
-- **Image Loading**: Coil
-- **Background Processing**: WorkManager
-- **Async**: Kotlin Coroutines & Flow
+The Noto Sans font’s SIL Open Font License is included at `app/src/main/res/font/OFL.txt`.
 
-## 🚀 Getting Started
+Dependencies are declared in `gradle/libs.versions.toml` and `app/build.gradle.kts`. The app uses only the libraries required by the current implementation; it does not include the unused Retrofit API stub, navigation, adaptive layouts, WorkManager, ExoPlayer, or Glide dependencies.
 
-### Prerequisites
+## Build
 
-- Android Studio Hedgehog (2024.1.1) or newer
-- JDK 17+
-- Android SDK 35 (Android 15)
-- An Android device or emulator running Android 8.0 (API 26) or higher
+### Requirements
 
-### Installation
+- JDK 17
+- Android SDK Platform 35
+- Gradle 8.12 (provided by the Gradle wrapper)
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/vicariusagent/postkeeper.git
-   cd postkeeper
-   ```
+Build a debug APK from the project root:
 
-2. **Open in Android Studio**
-   Open the project root in Android Studio and let Gradle sync complete.
+```bash
+./gradlew assembleDebug
+```
 
-3. **Build the Project**
-   ```bash
-   ./gradlew assembleDebug
-   ```
+The APK is generated at `app/build/outputs/apk/debug/app-debug.apk`. The GitHub Actions workflow builds this APK on pushes and pull requests to `main` and `master`, and on manual runs. The APK is uploaded as a workflow artifact.
 
-4. **Install the APK**
-   The generated APK can be found at `app/build/outputs/apk/debug/app-debug.apk`. Install it on your device.
+## Use
 
-## 💡 How to Use
+1. Open Postkeeper and tap **Add link**, or share a post’s text link to the app.
+2. When the public page exposes supported media metadata, the post appears in your collection.
+3. Tap **Download** to save the media to the device.
 
-1. Open **Instagram** or **X**.
-2. Find a post, reel, or story you want to save.
-3. Tap the **Share** button.
-4. Select **Postkeeper** from the share menu.
-5. Postkeeper will automatically parse the link, extract the media, and download it to your device's `Downloads/Postkeeper` folder.
-6. Open Postkeeper to view your saved collection.
+## License and disclaimer
 
-## ⚙️ Configuration
-
-No complex configuration is required. The app uses public web scraping techniques to extract media URLs. 
-
-*Note: Due to the dynamic nature of social media platforms, extraction logic may require updates if platform structures change.*
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## ⚠️ Disclaimer
-
-Postkeeper is intended for personal archival purposes only. 
-- Please respect the intellectual property rights of content creators.
-- Do not use this app to redistribute content without permission.
-- This app is not affiliated with Instagram, Meta, X, or Twitter.
-
-## 🤝 Contributing
-
-Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📬 Contact
-
-Project Link: [https://github.com/vicariusagent/postkeeper](https://github.com/vicariusagent/postkeeper)
-
----
-*Built with ❤️ using Kotlin and Jetpack Compose*
+This project is licensed under the [MIT License](LICENSE). Postkeeper is for personal archival use. Respect creators’ rights and do not redistribute media without permission. The app is not affiliated with Instagram, Meta, X, or Twitter.

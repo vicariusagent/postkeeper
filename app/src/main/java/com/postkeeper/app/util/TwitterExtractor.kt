@@ -37,7 +37,7 @@ object TwitterExtractor {
                 ?: doc.select("meta[property=\"og:site_name\"]").attr("content").takeIf { it.isNotBlank() }
                 ?: "Twitter"
             
-            if (videoUrl.isNotEmpty()) {
+            if (!videoUrl.isNullOrEmpty()) {
                 return@withContext TwitterMediaInfo(
                     mediaUrl = videoUrl,
                     thumbnailUrl = imageUrl.ifEmpty { null },
