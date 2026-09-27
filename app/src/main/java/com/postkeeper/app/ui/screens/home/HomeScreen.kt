@@ -5,6 +5,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RectangleShape
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Contrast
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import dev.vicart.compose.material.symbols.MaterialSymbol
 import com.postkeeper.app.data.model.Post
 import com.postkeeper.app.ui.PostCard
 import com.postkeeper.app.ui.theme.ThemeMode
@@ -72,7 +77,7 @@ fun HomeScreen(
                                 contentDescription = "Appearance: ${themeMode.label}"
                             }
                         ) {
-                            MaterialSymbol.Filled(icon = "contrast", size = 22.dp)
+                            Icon(Icons.Filled.Contrast, contentDescription = null)
                         }
                         DropdownMenu(expanded = showThemeMenu, onDismissRequest = { showThemeMenu = false }) {
                             ThemeMode.entries.forEach { mode ->
@@ -80,7 +85,7 @@ fun HomeScreen(
                                     text = { Text(mode.label) },
                                     onClick = { onThemeModeChange(mode); showThemeMenu = false },
                                     leadingIcon = {
-                                        if (mode == themeMode) MaterialSymbol.Filled(icon = "check", size = 18.dp)
+                                        if (mode == themeMode) Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
                                     }
                                 )
                             }
@@ -94,7 +99,7 @@ fun HomeScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showAddDialog = true },
-                icon = { MaterialSymbol.Filled(icon = "add", size = 24.dp) },
+                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                 text = { Text("Add link") },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -166,7 +171,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
     ) {
         Surface(shape = RectangleShape, color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.size(88.dp)) {
             Box(contentAlignment = Alignment.Center) {
-                MaterialSymbol.Filled(icon = "archive", size = 34.dp)
+                Icon(Icons.Filled.Archive, contentDescription = null, modifier = Modifier.size(34.dp))
             }
         }
         Spacer(Modifier.height(24.dp))

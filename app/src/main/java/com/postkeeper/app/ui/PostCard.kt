@@ -6,6 +6,13 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.shape.RectangleShape
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,7 +36,6 @@ import com.postkeeper.app.data.model.Platform
 import com.postkeeper.app.data.model.Post
 import com.postkeeper.app.ui.theme.SpacingExtraSmall
 import com.postkeeper.app.ui.theme.SpacingMedium
-import dev.vicart.compose.material.symbols.MaterialSymbol
 
 @Composable
 fun PostCard(
@@ -88,7 +94,7 @@ fun PostCard(
                         onClick = { },
                         label = { Text("Saved") },
                         leadingIcon = {
-                            MaterialSymbol.Filled(icon = "check", size = 16.dp)
+                            Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp))
                         },
                         modifier = Modifier
                             .align(Alignment.BottomStart)
@@ -133,7 +139,7 @@ fun PostCard(
                         enabled = !post.isDownloaded,
                         shape = RectangleShape
                     ) {
-                        MaterialSymbol.Filled(icon = "download", size = 18.dp)
+                        Icon(Icons.Filled.Download, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(SpacingExtraSmall.dp))
                         Text(if (post.isDownloaded) "Saved" else "Download")
                     }
@@ -145,7 +151,7 @@ fun PostCard(
                         ),
                         modifier = Modifier.wrapContentSize().semantics { contentDescription = "Delete post" }
                     ) {
-                        MaterialSymbol.Filled(icon = "delete", size = 24.dp)
+                        Icon(Icons.Filled.Delete, contentDescription = null)
                     }
                 }
             }
@@ -221,9 +227,10 @@ private fun MediaTypeBadge(mediaType: MediaType, modifier: Modifier = Modifier) 
             horizontalArrangement = Arrangement.spacedBy(SpacingExtraSmall.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            MaterialSymbol.Filled(
-                icon = if (mediaType == MediaType.VIDEO) "play_arrow" else "image",
-                size = 16.dp,
+            Icon(
+                imageVector = if (mediaType == MediaType.VIDEO) Icons.Filled.PlayArrow else Icons.Filled.Image,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
                 tint = MaterialTheme.colorScheme.onSurface
             )
             Text(
