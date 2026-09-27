@@ -63,7 +63,12 @@ class PostRepository(private val postDao: PostDao, private val context: Context)
         }
         
         if (mediaInfo == null) {
-            return ProcessResult.Error("Failed to extract media information. Make sure the post is public.")
+            val platformName = when (parsedResult.platform) {
+                Platform.INSTAGRAM -> "Instagram"
+                Platform.TWITTER -> "X"
+                Platform.UNKNOWN -> "This site"
+            }
+            return ProcessResult.Error("$platformName did not provide a direct media link. Check that the post is public and try again.")
         }
         
         // Create post entity
@@ -105,14 +110,39 @@ class PostRepository(private val postDao: PostDao, private val context: Context)
     }
     
     suspend fun downloadPost(postId: Long): DownloadResult {
-        val post = postDao.getPostById(postId) ?: return DownloadResult.Error("Post not found")
+        var post = postDao.getPostById(postId) ?: return DownloadResult.Error("Post not found")
         
         if (post.isDownloaded) {
             return DownloadResult.Error("Post already downloaded")
         }
+
+        // Social CDN URLs can expire, and a refreshed lookup also repairs records
+        // created when X returned a video thumbnail instead of its MP4 URL.
+        val refreshedMedia = when (post.platform) {
+            Platform.INSTAGRAM -> InstagramExtractor.extractMediaInfo(post.url)
+                ?.let { MediaInfo(it.mediaUrl, it.thumbnailUrl, it.mediaType, it.title, it.author) }
+            Platform.TWITTER -> TwitterExtractor.extractMediaInfo(post.url)
+                ?.let { MediaInfo(it.mediaUrl, it.thumbnailUrl, it.mediaType, it.title, it.author) }
+            Platform.UNKNOWN -> null
+        }
+        if (refreshedMedia != null) {
+            post = post.copy(
+                mediaType = refreshedMedia.mediaType,
+                mediaUrl = refreshedMedia.mediaUrl,
+                thumbnailUrl = refreshedMedia.thumbnailUrl,
+                title = refreshedMedia.title ?: post.title,
+                author = refreshedMedia.author ?: post.author
+            )
+            postDao.update(post)
+        }
         
         val downloader = MediaDownloader(context)
-        val result = downloader.downloadMedia(post.mediaUrl, post.mediaType, postId)
+        val referer = when (post.platform) {
+            Platform.INSTAGRAM -> "https://www.instagram.com/"
+            Platform.TWITTER -> "https://x.com/"
+            Platform.UNKNOWN -> null
+        }
+        val result = downloader.downloadMedia(post.mediaUrl, post.mediaType, postId, referer)
         
         if (result is DownloadResult.Success) {
             postDao.markAsDownloaded(postId, result.filePath, System.currentTimeMillis())

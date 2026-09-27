@@ -4,22 +4,21 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.postkeeper.app.R
+import com.postkeeper.app.data.model.MediaType
 import com.postkeeper.app.data.model.Post
+import com.postkeeper.app.data.model.Platform
 import com.postkeeper.app.ui.PostCard
 import com.postkeeper.app.ui.theme.ThemeMode
 
@@ -40,7 +39,13 @@ fun HomeScreen(
     var showAddDialog by remember { mutableStateOf(false) }
     var showThemeMenu by remember { mutableStateOf(false) }
     var urlInput by remember { mutableStateOf("") }
+    var selectedPlatform by remember { mutableStateOf<Platform?>(null) }
+    var selectedMediaType by remember { mutableStateOf<MediaType?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
+    val filteredPosts = posts.filter { post ->
+        (selectedPlatform == null || post.platform == selectedPlatform) &&
+            (selectedMediaType == null || post.mediaType == selectedMediaType)
+    }
 
     LaunchedEffect(processMessage, downloadMessage) {
         (downloadMessage ?: processMessage)?.let {
@@ -77,7 +82,7 @@ fun HomeScreen(
                                 contentDescription = "Appearance: ${themeMode.label}"
                             }
                         ) {
-                            Icon(Icons.Filled.Contrast, contentDescription = null)
+                            Icon(painterResource(R.drawable.sym_dark_mode), contentDescription = null)
                         }
                         DropdownMenu(expanded = showThemeMenu, onDismissRequest = { showThemeMenu = false }) {
                             ThemeMode.entries.forEach { mode ->
@@ -85,7 +90,7 @@ fun HomeScreen(
                                     text = { Text(mode.label) },
                                     onClick = { onThemeModeChange(mode); showThemeMenu = false },
                                     leadingIcon = {
-                                        if (mode == themeMode) Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        if (mode == themeMode) Icon(painterResource(R.drawable.sym_check), contentDescription = null, modifier = Modifier.size(18.dp))
                                     }
                                 )
                             }
@@ -99,7 +104,7 @@ fun HomeScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showAddDialog = true },
-                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                icon = { Icon(painterResource(R.drawable.sym_add), contentDescription = null) },
                 text = { Text("Add link") },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -122,7 +127,60 @@ fun HomeScreen(
                         Text("Links and media you’ve kept close.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-                items(posts, key = { it.id }) { post ->
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("SITE", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            FilterChip(
+                                selected = selectedPlatform == null,
+                                onClick = { selectedPlatform = null },
+                                label = { Text("All") }
+                            )
+                            FilterChip(
+                                selected = selectedPlatform == Platform.INSTAGRAM,
+                                onClick = { selectedPlatform = Platform.INSTAGRAM },
+                                label = { Text("Instagram") }
+                            )
+                            FilterChip(
+                                selected = selectedPlatform == Platform.TWITTER,
+                                onClick = { selectedPlatform = Platform.TWITTER },
+                                label = { Text("X") }
+                            )
+                        }
+                        Text("FORMAT", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            FilterChip(
+                                selected = selectedMediaType == null,
+                                onClick = { selectedMediaType = null },
+                                label = { Text("All") }
+                            )
+                            FilterChip(
+                                selected = selectedMediaType == MediaType.IMAGE,
+                                onClick = { selectedMediaType = MediaType.IMAGE },
+                                label = { Text("Images") }
+                            )
+                            FilterChip(
+                                selected = selectedMediaType == MediaType.VIDEO,
+                                onClick = { selectedMediaType = MediaType.VIDEO },
+                                label = { Text("Videos") }
+                            )
+                        }
+                    }
+                }
+                if (filteredPosts.isEmpty()) {
+                    item {
+                        Column(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 28.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text("No posts match these filters.", style = MaterialTheme.typography.bodyLarge)
+                            TextButton(onClick = { selectedPlatform = null; selectedMediaType = null }) {
+                                Text("Clear filters")
+                            }
+                        }
+                    }
+                } else items(filteredPosts, key = { it.id }) { post ->
                     PostCard(post = post, onDownloadClick = onDownloadClick, onDeleteClick = onDeleteClick)
                 }
             }
@@ -171,7 +229,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
     ) {
         Surface(shape = RectangleShape, color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.size(88.dp)) {
             Box(contentAlignment = Alignment.Center) {
-                Icon(Icons.Filled.Archive, contentDescription = null, modifier = Modifier.size(34.dp))
+                Icon(painterResource(R.drawable.sym_archive), contentDescription = null, modifier = Modifier.size(34.dp))
             }
         }
         Spacer(Modifier.height(24.dp))

@@ -5,12 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -31,6 +26,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.postkeeper.app.R
 import com.postkeeper.app.data.model.MediaType
 import com.postkeeper.app.data.model.Platform
 import com.postkeeper.app.data.model.Post
@@ -94,7 +90,7 @@ fun PostCard(
                         onClick = { },
                         label = { Text("Saved") },
                         leadingIcon = {
-                            Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(16.dp))
+                            Icon(painterResource(R.drawable.sym_check), contentDescription = null, modifier = Modifier.size(16.dp))
                         },
                         modifier = Modifier
                             .align(Alignment.BottomStart)
@@ -139,7 +135,7 @@ fun PostCard(
                         enabled = !post.isDownloaded,
                         shape = RectangleShape
                     ) {
-                        Icon(Icons.Filled.Download, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Icon(painterResource(R.drawable.sym_download), contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(SpacingExtraSmall.dp))
                         Text(if (post.isDownloaded) "Saved" else "Download")
                     }
@@ -151,7 +147,7 @@ fun PostCard(
                         ),
                         modifier = Modifier.wrapContentSize().semantics { contentDescription = "Delete post" }
                     ) {
-                        Icon(Icons.Filled.Delete, contentDescription = null)
+                        Icon(painterResource(R.drawable.sym_delete), contentDescription = null)
                     }
                 }
             }
@@ -228,7 +224,7 @@ private fun MediaTypeBadge(mediaType: MediaType, modifier: Modifier = Modifier) 
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = if (mediaType == MediaType.VIDEO) Icons.Filled.PlayArrow else Icons.Filled.Image,
+                painter = painterResource(if (mediaType == MediaType.VIDEO) R.drawable.sym_play_arrow else R.drawable.sym_image),
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
                 tint = MaterialTheme.colorScheme.onSurface

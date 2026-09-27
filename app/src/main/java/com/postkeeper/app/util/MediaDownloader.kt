@@ -20,23 +20,43 @@ class MediaDownloader(private val context: Context) {
         .writeTimeout(60, TimeUnit.SECONDS)
         .build()
     
-    suspend fun downloadMedia(mediaUrl: String, mediaType: MediaType, postId: Long): DownloadResult = withContext(Dispatchers.IO) {
+    suspend fun downloadMedia(
+        mediaUrl: String,
+        mediaType: MediaType,
+        postId: Long,
+        referer: String? = null
+    ): DownloadResult = withContext(Dispatchers.IO) {
         try {
-            val request = okhttp3.Request.Builder()
+            val requestBuilder = okhttp3.Request.Builder()
                 .url(mediaUrl)
-                .build()
+                .header("User-Agent", "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36")
+                .header("Accept", "*/*")
+            if (referer != null) requestBuilder.header("Referer", referer)
             
-            client.newCall(request).execute().use { response ->
+            client.newCall(requestBuilder.build()).execute().use { response ->
                 if (!response.isSuccessful) {
                     return@withContext DownloadResult.Error("The media server returned ${response.code}.")
                 }
                 val body = response.body ?: return@withContext DownloadResult.Error("The media server returned an empty file.")
                 if (body.contentLength() == 0L) return@withContext DownloadResult.Error("The media file is empty.")
                 val contentType = response.header("Content-Type")?.substringBefore(';')?.trim()?.lowercase().orEmpty()
-                if (!contentType.startsWith("image/") && !contentType.startsWith("video/")) {
+                val responseIsVideo = contentType.startsWith("video/")
+                val responseIsImage = contentType.startsWith("image/")
+                val genericBinary = contentType == "application/octet-stream" || contentType == "binary/octet-stream"
+                if (!responseIsImage && !responseIsVideo && !(genericBinary && mediaType != MediaType.UNKNOWN)) {
                     return@withContext DownloadResult.Error("The link did not return an image or video file.")
                 }
-                val actualType = if (contentType.startsWith("video/")) MediaType.VIDEO else MediaType.IMAGE
+                if (mediaType == MediaType.VIDEO && responseIsImage) {
+                    return@withContext DownloadResult.Error("The site returned a video thumbnail instead of the video file.")
+                }
+                if (mediaType == MediaType.IMAGE && responseIsVideo) {
+                    return@withContext DownloadResult.Error("The site returned a video where an image was expected.")
+                }
+                val actualType = when {
+                    responseIsVideo -> MediaType.VIDEO
+                    responseIsImage -> MediaType.IMAGE
+                    else -> mediaType
+                }
                 val (extension, mimeType) = getFileExtensionAndMimeType(actualType, contentType)
                 val fileName = "postkeeper_${postId}_${System.currentTimeMillis()}.$extension"
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
