@@ -78,7 +78,7 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun PostkeeperTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true, // Support for Android 12+ Material You
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

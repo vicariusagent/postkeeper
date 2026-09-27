@@ -8,21 +8,21 @@ object UrlParser {
     fun parseUrl(url: String): ParsedUrlResult {
         val platform = detectPlatform(url)
         val mediaType = detectMediaType(url, platform)
+        val host = runCatching { java.net.URI(url).host?.lowercase()?.removePrefix("www.") }.getOrNull()
+        val validHost = host in setOf("instagram.com", "instagr.am", "twitter.com", "x.com")
         
         return ParsedUrlResult(
             url = url,
             platform = platform,
             mediaType = mediaType,
-            isValid = platform != Platform.UNKNOWN
+            isValid = platform != Platform.UNKNOWN && validHost
         )
     }
     
     fun detectPlatform(url: String): Platform {
         return when {
-            url.contains("instagram.com", ignoreCase = true) -> Platform.INSTAGRAM
-            url.contains("instagr.am", ignoreCase = true) -> Platform.INSTAGRAM
-            url.contains("twitter.com", ignoreCase = true) -> Platform.TWITTER
-            url.contains("x.com", ignoreCase = true) -> Platform.TWITTER
+            runCatching { java.net.URI(url).host?.lowercase()?.removePrefix("www.") }.getOrNull() in setOf("instagram.com", "instagr.am") -> Platform.INSTAGRAM
+            runCatching { java.net.URI(url).host?.lowercase()?.removePrefix("www.") }.getOrNull() in setOf("twitter.com", "x.com") -> Platform.TWITTER
             else -> Platform.UNKNOWN
         }
     }

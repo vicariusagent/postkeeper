@@ -22,9 +22,9 @@ object InstagramExtractor {
                 .get()
             
             // Try to find video URL first
-            val videoUrl = doc.select("meta[property=\"og:video:secure_url\"]").attr("content")
-                ?: doc.select("meta[property=\"og:video:url\"]").attr("content")
-                ?: doc.select("video[src]").attr("src")
+            val videoUrl = doc.select("meta[property=\"og:video:secure_url\"]").attr("content").takeIf { it.isNotBlank() }
+                ?: doc.select("meta[property=\"og:video:url\"]").attr("content").takeIf { it.isNotBlank() }
+                ?: doc.select("video[src]").attr("src").takeIf { it.isNotBlank() }
             
             // Get image URL as fallback or thumbnail
             val imageUrl = doc.select("meta[property=\"og:image\"]").attr("content")
@@ -33,7 +33,7 @@ object InstagramExtractor {
             val description = doc.select("meta[property=\"og:description\"]").attr("content")
             
             // Get author
-            val author = doc.select("meta[property=\"og:site_name\"]").attr("content")
+            val author = doc.select("meta[name=\"twitter:creator\"]").attr("content").takeIf { it.isNotBlank() }
                 ?: "Instagram"
             
             if (videoUrl.isNotEmpty()) {
@@ -42,12 +42,12 @@ object InstagramExtractor {
                     thumbnailUrl = imageUrl.ifEmpty { null },
                     mediaType = MediaType.VIDEO,
                     title = description.ifEmpty { null },
-                    author = author
+                    author = author.trimStart('@')
                 )
             } else if (imageUrl.isNotEmpty()) {
                 return@withContext InstagramMediaInfo(
                     mediaUrl = imageUrl,
-                    thumbnailUrl = null,
+                    thumbnailUrl = imageUrl,
                     mediaType = MediaType.IMAGE,
                     title = description.ifEmpty { null },
                     author = author
@@ -56,7 +56,7 @@ object InstagramExtractor {
             
             null
         } catch (e: Exception) {
-            e.printStackTrace()
+            android.util.Log.w("InstagramExtractor", "Could not read public Instagram media", e)
             null
         }
     }

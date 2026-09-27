@@ -26,6 +26,9 @@ class HomeViewModel @Inject constructor(
     
     private val _processResult = MutableStateFlow<ProcessResult?>(null)
     val processResult: StateFlow<ProcessResult?> = _processResult.asStateFlow()
+
+    private val _isAdding = MutableStateFlow(false)
+    val isAdding: StateFlow<Boolean> = _isAdding.asStateFlow()
     
     init {
         observePosts()
@@ -43,8 +46,12 @@ class HomeViewModel @Inject constructor(
         if (url.isBlank()) return
         
         viewModelScope.launch {
-            val result = repository.processSharedUrl(url)
-            _processResult.value = result
+            _isAdding.value = true
+            try {
+                _processResult.value = repository.processSharedUrl(url)
+            } finally {
+                _isAdding.value = false
+            }
         }
     }
     
@@ -63,5 +70,10 @@ class HomeViewModel @Inject constructor(
     
     fun resetProcessResult() {
         _processResult.value = null
+    }
+
+    fun clearMessages() {
+        _processResult.value = null
+        _downloadResult.value = null
     }
 }

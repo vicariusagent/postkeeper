@@ -5,13 +5,11 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import androidx.core.content.FileProvider
 import com.postkeeper.app.data.model.MediaType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.io.File
-import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
 
 class MediaDownloader(private val context: Context) {
@@ -28,28 +26,25 @@ class MediaDownloader(private val context: Context) {
                 .url(mediaUrl)
                 .build()
             
-            val response = client.newCall(request).execute()
-            
-            if (!response.isSuccessful) {
-                return@withContext DownloadResult.Error("Failed to download: ${response.code}")
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    return@withContext DownloadResult.Error("The media server returned ${response.code}.")
+                }
+                val body = response.body ?: return@withContext DownloadResult.Error("The media server returned an empty file.")
+                if (body.contentLength() == 0L) return@withContext DownloadResult.Error("The media file is empty.")
+                val contentType = response.header("Content-Type")?.substringBefore(';')?.trim()?.lowercase().orEmpty()
+                if (!contentType.startsWith("image/") && !contentType.startsWith("video/")) {
+                    return@withContext DownloadResult.Error("The link did not return an image or video file.")
+                }
+                val actualType = if (contentType.startsWith("video/")) MediaType.VIDEO else MediaType.IMAGE
+                val (extension, mimeType) = getFileExtensionAndMimeType(actualType, contentType)
+                val fileName = "postkeeper_${postId}_${System.currentTimeMillis()}.$extension"
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    saveToMediaStoreApi29Plus(fileName, mimeType, body.byteStream())
+                } else {
+                    saveToLegacyStorage(fileName, mimeType, body.byteStream())
+                }
             }
-            
-            val body = response.body ?: return@withContext DownloadResult.Error("Empty response body")
-            
-            // Determine file extension and MIME type
-            val contentType = response.header("Content-Type") ?: ""
-            val (extension, mimeType) = getFileExtensionAndMimeType(mediaType, contentType)
-            
-            val fileName = "postkeeper_${System.currentTimeMillis()}.$extension"
-            
-            // Use MediaStore for Android 10+ (API 29+), legacy storage for older versions
-            val savedPath = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                saveToMediaStoreApi29Plus(fileName, mimeType, body.byteStream())
-            } else {
-                saveToLegacyStorage(fileName, body.byteStream())
-            }
-            
-            savedPath
         } catch (e: Exception) {
             DownloadResult.Error("Download failed: ${e.message}")
         }
@@ -63,6 +58,7 @@ class MediaDownloader(private val context: Context) {
                     contentType.contains("png") -> Pair("png", "image/png")
                     contentType.contains("webp") -> Pair("webp", "image/webp")
                     contentType.contains("gif") -> Pair("gif", "image/gif")
+                    contentType.contains("jpeg") || contentType.contains("jpg") -> Pair("jpg", "image/jpeg")
                     else -> Pair("jpg", "image/jpeg")
                 }
             }
@@ -88,15 +84,23 @@ class MediaDownloader(private val context: Context) {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
                 put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
                 put(MediaStore.MediaColumns.RELATIVE_PATH, getRelativePath(mimeType))
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
             
             val resolver = context.contentResolver
             val uri = resolver.insert(collection, contentValues)
                 ?: return DownloadResult.Error("Failed to create MediaStore entry")
             
-            resolver.openOutputStream(uri)?.use { outputStream ->
-                inputStream.copyTo(outputStream)
-            } ?: return DownloadResult.Error("Failed to open output stream")
+            try {
+                resolver.openOutputStream(uri)?.use { outputStream ->
+                    inputStream.use { it.copyTo(outputStream) }
+                } ?: throw IllegalStateException("Could not open output file")
+                val completed = ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }
+                resolver.update(uri, completed, null, null)
+            } catch (e: Exception) {
+                resolver.delete(uri, null, null)
+                throw e
+            }
             
             // Return the URI string as the saved path
             DownloadResult.Success(uri.toString())
@@ -108,18 +112,19 @@ class MediaDownloader(private val context: Context) {
     /**
      * Save file using legacy storage (Android 9 and below)
      */
-    private fun saveToLegacyStorage(fileName: String, inputStream: java.io.InputStream): DownloadResult {
+    private fun saveToLegacyStorage(fileName: String, mimeType: String, inputStream: java.io.InputStream): DownloadResult {
         return try {
-            val downloadDir = getLegacyDownloadDirectory()
-            val file = File(downloadDir, fileName)
-            
-            FileOutputStream(file).use { output ->
-                inputStream.use { input ->
-                    input.copyTo(output)
-                }
+            val resolver = context.contentResolver
+            val collection = if (mimeType.startsWith("image/")) MediaStore.Images.Media.EXTERNAL_CONTENT_URI else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+                put(MediaStore.MediaColumns.DATA, File(getLegacyDownloadDirectory(), fileName).absolutePath)
             }
-            
-            DownloadResult.Success(file.absolutePath)
+            val uri = resolver.insert(collection, values) ?: return DownloadResult.Error("Could not create the saved media file.")
+            resolver.openOutputStream(uri)?.use { output -> inputStream.use { it.copyTo(output) } }
+                ?: return DownloadResult.Error("Could not write the saved media file.")
+            DownloadResult.Success(uri.toString())
         } catch (e: Exception) {
             DownloadResult.Error("Legacy save failed: ${e.message}")
         }
@@ -145,9 +150,7 @@ class MediaDownloader(private val context: Context) {
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
             "Postkeeper"
         )
-        if (!postkeeperDir.exists()) {
-            postkeeperDir.mkdirs()
-        }
+        if (!postkeeperDir.exists() && !postkeeperDir.mkdirs()) throw IllegalStateException("Could not create Postkeeper download folder")
         return postkeeperDir
     }
 }

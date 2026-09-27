@@ -1,7 +1,9 @@
 package com.postkeeper.app.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -13,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -25,7 +26,9 @@ import coil.request.ImageRequest
 import com.postkeeper.app.data.model.MediaType
 import com.postkeeper.app.data.model.Platform
 import com.postkeeper.app.data.model.Post
-import com.postkeeper.app.ui.theme.*
+import com.postkeeper.app.ui.theme.SpacingExtraSmall
+import com.postkeeper.app.ui.theme.SpacingMedium
+import com.postkeeper.app.ui.theme.CornerRadiusMedium
 
 @Composable
 fun PostCard(
@@ -37,18 +40,19 @@ fun PostCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = SpacingMedium.dp, vertical = SpacingSmall.dp),
-        shape = RoundedCornerShape(CornerRadiusLarge.dp),
+            .padding(vertical = 2.dp),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(240.dp)
+                    .height(220.dp)
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -58,37 +62,22 @@ fun PostCard(
                     contentDescription = post.title ?: "Post thumbnail",
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(RoundedCornerShape(topStart = CornerRadiusLarge.dp, topEnd = CornerRadiusLarge.dp)),
+                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
                     contentScale = ContentScale.Crop
-                )
-                
-                // Gradient overlay for better badge visibility
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.3f)
-                                ),
-                                startY = 150f
-                            )
-                        )
                 )
                 
                 PlatformBadge(
                     platform = post.platform,
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(SpacingSmall.dp)
+                        .padding(12.dp)
                 )
                 
                 MediaTypeBadge(
                     mediaType = post.mediaType,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(SpacingSmall.dp)
+                        .padding(12.dp)
                 )
                 
                 if (post.isDownloaded) {
@@ -100,7 +89,7 @@ fun PostCard(
                         },
                         modifier = Modifier
                             .align(Alignment.BottomStart)
-                            .padding(SpacingSmall.dp),
+                            .padding(12.dp),
                         colors = AssistChipDefaults.assistChipColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
                         )
@@ -109,10 +98,7 @@ fun PostCard(
             }
             
             Column(
-                modifier = Modifier.padding(
-                    horizontal = SpacingMedium.dp,
-                    vertical = SpacingMedium.dp
-                )
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 18.dp)
             ) {
                 Text(
                     text = post.title ?: "Untitled Post",
@@ -128,27 +114,21 @@ fun PostCard(
                         text = "@$author",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = SpacingExtraSmall.dp)
+                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
                 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = SpacingMedium.dp),
-                    horizontalArrangement = Arrangement.spacedBy(SpacingSmall.dp)
+                        .padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Button(
                         onClick = { onDownloadClick(post) },
                         modifier = Modifier.weight(1f),
                         enabled = !post.isDownloaded,
-                        shape = RoundedCornerShape(CornerRadiusMedium.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (post.isDownloaded) 
-                                MaterialTheme.colorScheme.primaryContainer 
-                            else 
-                                MaterialTheme.colorScheme.primary
-                        )
+                        shape = RoundedCornerShape(16.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Download,
@@ -181,10 +161,10 @@ fun PostCard(
 private fun PlatformBadge(platform: Platform, modifier: Modifier = Modifier) {
     val platformColors = when (platform) {
         Platform.INSTAGRAM -> Brush.linearGradient(
-            colors = listOf(InstagramGradientStart, InstagramGradientEnd)
+            colors = listOf(Color(0xFF222222), Color(0xFF222222))
         )
         Platform.TWITTER -> Brush.linearGradient(
-            colors = listOf(XBlack, XDarkGray)
+            colors = listOf(Color(0xFF222222), Color(0xFF222222))
         )
         Platform.UNKNOWN -> Brush.linearGradient(
             colors = listOf(MaterialTheme.colorScheme.outline, MaterialTheme.colorScheme.outlineVariant)
@@ -193,13 +173,13 @@ private fun PlatformBadge(platform: Platform, modifier: Modifier = Modifier) {
     
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(CornerRadiusMedium.dp),
+        shape = RoundedCornerShape(100.dp),
         shadowElevation = 4.dp
     ) {
         Box(
             modifier = Modifier
                 .background(platformColors)
-                .padding(horizontal = SpacingMedium.dp, vertical = SpacingExtraSmall.dp)
+                .padding(horizontal = 12.dp, vertical = SpacingExtraSmall.dp)
         ) {
             Text(
                 text = when (platform) {
@@ -219,7 +199,7 @@ private fun PlatformBadge(platform: Platform, modifier: Modifier = Modifier) {
 private fun MediaTypeBadge(mediaType: MediaType, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(CornerRadiusMedium.dp),
+        shape = RoundedCornerShape(100.dp),
         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
         shadowElevation = 2.dp
     ) {

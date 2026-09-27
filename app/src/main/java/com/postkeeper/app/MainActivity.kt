@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,12 +28,15 @@ class MainActivity : ComponentActivity() {
         
         setContent {
             PostkeeperTheme {
+                val posts = viewModel.posts.collectAsStateWithLifecycle()
+                val processResult = viewModel.processResult.collectAsStateWithLifecycle()
+                val downloadResult = viewModel.downloadResult.collectAsStateWithLifecycle()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     HomeScreen(
-                        posts = viewModel.posts.value,
+                        posts = posts.value,
                         onDownloadClick = { post ->
                             viewModel.downloadPost(post.id)
                         },
@@ -41,7 +45,21 @@ class MainActivity : ComponentActivity() {
                         },
                         onAddUrl = { url ->
                             viewModel.processSharedUrl(url)
-                        }
+                        },
+                        processMessage = processResult.value?.let { result ->
+                            when (result) {
+                                is com.postkeeper.app.data.repository.ProcessResult.Success -> "Post saved to your collection."
+                                is com.postkeeper.app.data.repository.ProcessResult.Exists -> "This post is already in your collection."
+                                is com.postkeeper.app.data.repository.ProcessResult.Error -> result.message
+                            }
+                        },
+                        downloadMessage = downloadResult.value?.let { result ->
+                            when (result) {
+                                is com.postkeeper.app.util.DownloadResult.Success -> "Media saved to your device."
+                                is com.postkeeper.app.util.DownloadResult.Error -> result.message
+                            }
+                        },
+                        onDismissMessage = viewModel::clearMessages
                     )
                 }
             }

@@ -11,6 +11,7 @@ import com.postkeeper.app.util.MediaDownloader
 import com.postkeeper.app.util.TwitterExtractor
 import com.postkeeper.app.util.UrlParser
 import kotlinx.coroutines.flow.Flow
+import java.net.URI
 
 class PostRepository(private val postDao: PostDao, private val context: Context) {
     
@@ -27,24 +28,36 @@ class PostRepository(private val postDao: PostDao, private val context: Context)
     suspend fun deletePost(post: Post) = postDao.delete(post)
     
     suspend fun processSharedUrl(url: String): ProcessResult {
-        // Parse the URL to detect platform and media type
-        val parsedResult = UrlParser.parseUrl(url)
+        val normalizedUrl = url.trim().let { raw ->
+            Regex("https?://[^\\s<>\\\"']+").find(raw)?.value ?: raw
+        }.trimEnd('.', ',', ')', ']', '}', '>', '\"', '\'')
+        val uri = runCatching { URI(normalizedUrl) }.getOrNull()
+        val host = uri?.host?.lowercase()?.removePrefix("www.")
+        val validHost = host in setOf("instagram.com", "instagr.am", "x.com", "twitter.com")
+        if (uri?.scheme !in setOf("http", "https") || !validHost) {
+            return ProcessResult.Error("Enter a valid Instagram or X post link.")
+        }
+        if (uri.path.orEmpty().substringAfterLast('/').contains('.')) {
+            return processDirectMediaUrl(normalizedUrl)
+        }
+
+        val parsedResult = UrlParser.parseUrl(normalizedUrl)
         
         if (!parsedResult.isValid) {
             return ProcessResult.Error("Unsupported platform or invalid URL")
         }
         
         // Check if post already exists
-        val existingPost = postDao.getPostByUrl(url)
+        val existingPost = postDao.getPostByUrl(normalizedUrl)
         if (existingPost != null) {
             return ProcessResult.Exists(existingPost)
         }
         
         // Extract media info based on platform
         val mediaInfo = when (parsedResult.platform) {
-            Platform.INSTAGRAM -> InstagramExtractor.extractMediaInfo(url)
+            Platform.INSTAGRAM -> InstagramExtractor.extractMediaInfo(normalizedUrl)
                 ?.let { MediaInfo(it.mediaUrl, it.thumbnailUrl, it.mediaType, it.title, it.author) }
-            Platform.TWITTER -> TwitterExtractor.extractMediaInfo(url)
+            Platform.TWITTER -> TwitterExtractor.extractMediaInfo(normalizedUrl)
                 ?.let { MediaInfo(it.mediaUrl, it.thumbnailUrl, it.mediaType, it.title, it.author) }
             Platform.UNKNOWN -> null
         }
@@ -55,7 +68,7 @@ class PostRepository(private val postDao: PostDao, private val context: Context)
         
         // Create post entity
         val post = Post(
-            url = url,
+            url = normalizedUrl,
             platform = parsedResult.platform,
             mediaType = mediaInfo.mediaType,
             mediaUrl = mediaInfo.mediaUrl,
@@ -69,6 +82,26 @@ class PostRepository(private val postDao: PostDao, private val context: Context)
         val savedPost = post.copy(id = postId)
         
         return ProcessResult.Success(savedPost)
+    }
+
+    private suspend fun processDirectMediaUrl(url: String): ProcessResult {
+        val uri = runCatching { URI(url) }.getOrNull()
+            ?: return ProcessResult.Error("Enter a valid media link.")
+        if (uri.scheme !in setOf("http", "https") || uri.host.isNullOrBlank()) {
+            return ProcessResult.Error("Enter a valid media link.")
+        }
+        val path = uri.path.orEmpty().lowercase()
+        val type = when {
+            path.endsWith(".mp4") || path.endsWith(".mov") || path.endsWith(".webm") -> MediaType.VIDEO
+            path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".png") || path.endsWith(".webp") || path.endsWith(".gif") -> MediaType.IMAGE
+            else -> return ProcessResult.Error("This direct link must point to an image or video file.")
+        }
+        val existing = postDao.getPostByUrl(url)
+        if (existing != null) return ProcessResult.Exists(existing)
+        val platform = UrlParser.detectPlatform(url)
+        val post = Post(url = url, platform = platform, mediaType = type, mediaUrl = url, title = uri.host)
+        val id = postDao.insert(post)
+        return ProcessResult.Success(post.copy(id = id))
     }
     
     suspend fun downloadPost(postId: Long): DownloadResult {

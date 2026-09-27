@@ -22,9 +22,9 @@ object TwitterExtractor {
                 .get()
             
             // Try to find video URL from player iframe or meta tags
-            val videoUrl = doc.select("meta[property=\"og:video:secure_url\"]").attr("content")
-                ?: doc.select("meta[property=\"og:video:url\"]").attr("content")
-                ?: doc.select("iframe[src*=\"/i/videos/\"]").attr("src")
+            val videoUrl = doc.select("meta[property=\"og:video:secure_url\"]").attr("content").takeIf { it.isNotBlank() }
+                ?: doc.select("meta[property=\"og:video:url\"]").attr("content").takeIf { it.isNotBlank() }
+                ?: doc.select("iframe[src*=\"/i/videos/\"]").attr("src").takeIf { it.isNotBlank() }
             
             // Get image URL
             val imageUrl = doc.select("meta[property=\"og:image\"]").attr("content")
@@ -33,8 +33,8 @@ object TwitterExtractor {
             val description = doc.select("meta[property=\"og:description\"]").attr("content")
             
             // Get author name
-            val author = doc.select("meta[name=\"twitter:creator\"]").attr("content")
-                ?: doc.select("meta[property=\"og:site_name\"]").attr("content")
+            val author = doc.select("meta[name=\"twitter:creator\"]").attr("content").takeIf { it.isNotBlank() }
+                ?: doc.select("meta[property=\"og:site_name\"]").attr("content").takeIf { it.isNotBlank() }
                 ?: "Twitter"
             
             if (videoUrl.isNotEmpty()) {
@@ -48,7 +48,7 @@ object TwitterExtractor {
             } else if (imageUrl.isNotEmpty()) {
                 return@withContext TwitterMediaInfo(
                     mediaUrl = imageUrl,
-                    thumbnailUrl = null,
+                    thumbnailUrl = imageUrl,
                     mediaType = MediaType.IMAGE,
                     title = description.ifEmpty { null },
                     author = author.trimStart('@')
@@ -57,7 +57,7 @@ object TwitterExtractor {
             
             null
         } catch (e: Exception) {
-            e.printStackTrace()
+            android.util.Log.w("TwitterExtractor", "Could not read public X media", e)
             null
         }
     }
