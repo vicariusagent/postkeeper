@@ -5,6 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import org.jsoup.Jsoup
+import kotlin.math.PI
+import kotlin.math.floor
 
 /** Extracts media URLs from public X/Twitter posts. */
 object TwitterExtractor {
@@ -20,20 +22,25 @@ object TwitterExtractor {
     }
 
     private fun extractFromSyndication(tweetId: String): TwitterMediaInfo? = runCatching {
-        val response = Jsoup.connect("https://cdn.syndication.twimg.com/tweet-result?id=$tweetId&lang=en")
+        val token = syndicationToken(tweetId)
+        val response = Jsoup.connect("https://cdn.syndication.twimg.com/tweet-result?id=$tweetId&lang=en&token=$token")
             .ignoreContentType(true)
-            .userAgent(USER_AGENT)
+            .userAgent("Googlebot")
             .referrer("https://x.com/")
             .timeout(20_000)
             .get()
         val tweet = JSONObject(response.text())
-        val media = tweet.optJSONArray("mediaDetails")
+        val mediaItems = sequenceOf(tweet, tweet.optJSONObject("quoted_tweet"), tweet.optJSONObject("retweeted_status"))
+            .filterNotNull()
+            .flatMap { item ->
+                val details = item.optJSONArray("mediaDetails")
+                (0 until (details?.length() ?: 0)).mapNotNull { details?.optJSONObject(it) }.asSequence()
+            }.toList()
         var imageUrl: String? = null
         var thumbnailUrl: String? = null
 
-        if (media != null) {
-            for (index in 0 until media.length()) {
-                val item = media.optJSONObject(index) ?: continue
+        if (mediaItems.isNotEmpty()) {
+            for (item in mediaItems) {
                 val type = item.optString("type")
                 val preview = item.optString("media_url_https").takeIf(String::isNotBlank)
                 if (type == "video" || type == "animated_gif") {
@@ -71,6 +78,55 @@ object TwitterExtractor {
             )
         }
     }.onFailure { android.util.Log.w("TwitterExtractor", "X syndication lookup failed", it) }.getOrNull()
+
+    /** X computes this public endpoint token from the numeric tweet ID. */
+    private fun syndicationToken(tweetId: String): String {
+        val number = (tweetId.toDouble() / 1e15) * PI
+        var fraction = number - floor(number)
+        var integer = floor(number).toLong()
+        val alphabet = "0123456789abcdefghijklmnopqrstuvwxyz"
+        val whole = StringBuilder()
+        do {
+            whole.append(alphabet[(integer % 36).toInt()])
+            integer /= 36
+        } while (integer > 0)
+        whole.reverse()
+
+        // Emit the shortest base-36 representation that distinguishes this
+        // floating-point value, matching JavaScript Number.toString(36).
+        var delta = (Math.ulp(number) / 2.0).coerceAtLeast(Double.MIN_VALUE)
+        val digits = StringBuilder()
+        while (fraction >= delta && digits.length < 32) {
+            delta *= 36.0
+            val scaled = fraction * 36.0
+            val digit = floor(scaled).toInt().coerceIn(0, 35)
+            digits.append(alphabet[digit])
+            fraction = scaled - digit
+            val needsRounding = fraction > 0.5 || (fraction == 0.5 && digit % 2 == 1)
+            if (needsRounding && fraction + delta > 1.0) {
+                var carryIndex = digits.lastIndex
+                while (carryIndex >= 0 && digits[carryIndex] == 'z') {
+                    digits.deleteCharAt(carryIndex)
+                    carryIndex--
+                }
+                if (carryIndex >= 0) {
+                    digits.setCharAt(carryIndex, alphabet[alphabet.indexOf(digits[carryIndex]) + 1])
+                } else {
+                    integer = whole.toString().toLong(36) + 1
+                    whole.clear()
+                    var carried = integer
+                    do {
+                        whole.append(alphabet[(carried % 36).toInt()])
+                        carried /= 36
+                    } while (carried > 0)
+                    whole.reverse()
+                }
+                break
+            }
+        }
+        val raw = if (digits.isEmpty()) whole.toString() else "$whole.$digits"
+        return raw.filterNot { it == '0' || it == '.' }
+    }
 
     private fun extractFromPage(url: String): TwitterMediaInfo? = runCatching {
         val doc = Jsoup.connect(url)

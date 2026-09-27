@@ -47,12 +47,14 @@ object InstagramExtractor {
     }
 
     private fun extractFromDocument(doc: Document, originalUrl: String): InstagramMediaInfo? {
+        val embeddedVideo = embeddedVideoUrl(doc)
         val jsonLd = doc.select("script[type='application/ld+json']")
             .asSequence()
             .mapNotNull { script -> runCatching { JSONObject(script.data().ifBlank { script.html() }) }.getOrNull() }
             .firstOrNull()
         val jsonVideo = jsonLd?.let(::videoUrlFromJsonLd)
         val videoUrl = sequenceOf(
+            embeddedVideo,
             jsonVideo,
             doc.select("meta[property='og:video:secure_url']").attr("content"),
             doc.select("meta[property='og:video:url']").attr("content"),
@@ -92,6 +94,22 @@ object InstagramExtractor {
         // Do not mistake an Instagram video preview image for the video itself.
         if (isVideoPost || ogImage == null) return null
         return InstagramMediaInfo(ogImage, ogImage, MediaType.IMAGE, description, author)
+    }
+
+    /** Public post HTML often contains the MP4 in serialized app data even when OG tags expose only a thumbnail. */
+    private fun embeddedVideoUrl(doc: Document): String? {
+        val videoUrlPattern = Regex("\\\"(?:video_url|videoUrl|contentUrl)\\\"\\s*:\\s*\\\"((?:\\\\\\\\.|[^\\\"\\\\\\\\])*)\\\"")
+        val videoVersionsPattern = Regex("\\\"video_versions\\\"\\s*:\\s*\\[.{0,3000}?\\\"url\\\"\\s*:\\s*\\\"((?:\\\\\\\\.|[^\\\"\\\\\\\\])*)\\\"", RegexOption.DOT_MATCHES_ALL)
+        for (script in doc.select("script")) {
+            val source = script.data().ifBlank { script.html() }
+            val encodedUrl = sequenceOf(videoUrlPattern.find(source), videoVersionsPattern.find(source))
+                .filterNotNull()
+                .map { it.groupValues[1] }
+                .firstOrNull() ?: continue
+            val decoded = runCatching { JSONObject("{\"url\":\"$encodedUrl\"}").optString("url") }.getOrNull()
+            if (isHttpMediaUrl(decoded)) return decoded
+        }
+        return null
     }
 
     private fun videoUrlFromJsonLd(json: JSONObject): String? {
