@@ -1,14 +1,1 @@
-# Build and Gradle
-build/
-.gradle/
-
-# IDE and Editor
-.idea/
-*.iml
-.vscode/
-
-# Local configuration
-local.properties
-
-# Logs and Crash Reports
-*.log
+(empty)
