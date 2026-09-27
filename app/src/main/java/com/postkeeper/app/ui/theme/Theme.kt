@@ -2,6 +2,7 @@ package com.postkeeper.app.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
@@ -9,8 +10,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 
 enum class ThemeMode(val label: String) {
@@ -108,11 +109,11 @@ fun PostkeeperTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         shapes = Shapes(
-            extraSmall = RectangleShape,
-            small = RectangleShape,
-            medium = RectangleShape,
-            large = RectangleShape,
-            extraLarge = RectangleShape
+            extraSmall = RoundedCornerShape(0.dp),
+            small = RoundedCornerShape(0.dp),
+            medium = RoundedCornerShape(0.dp),
+            large = RoundedCornerShape(0.dp),
+            extraLarge = RoundedCornerShape(0.dp)
         ),
         typography = Typography,
         content = content
