@@ -2,7 +2,7 @@
 agp = "8.7.0"
 kotlin = "2.1.0"
 ksp = "2.1.0-1.0.29"
-coreKtx = "1.19.0"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -12,10 +12,10 @@ room = "2.8.5"
 coroutines = "1.9.0"
 okhttp = "4.12.0"
 jsoup = "1.23.2"
-composeBom = "2026.09.00"
-activityCompose = "1.13.0"
+composeBom = "2025.12.00"
+activityCompose = "1.10.1"
 coil = "2.7.0"
-materialSymbols = "1.1.6"
+materialSymbols = "1.1.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
